@@ -33,6 +33,8 @@ public class StockController {
     private ObjectMapper om = new ObjectMapper();
     public HttpHeaders responseHeaders = new HttpHeaders();
 
+
+
     @RequestMapping(value = "/pop", method = RequestMethod.DELETE)
     public ResponseEntity<String> removeStock() throws JsonProcessingException {
         responseHeaders.add("Content-Type", "application/json");

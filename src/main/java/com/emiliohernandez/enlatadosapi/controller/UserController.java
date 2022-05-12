@@ -149,7 +149,7 @@ public class UserController {
                 }else{
                     rsp.setMessage("Error al actualizar el usuario!");
                     rsp.setResult(null);
-                    rsp.setSuccess(Boolean.TRUE);
+                    rsp.setSuccess(Boolean.FALSE);
                 }
             }else{
                 rsp.setMessage("Usuario inexistente.");

@@ -54,6 +54,22 @@ public class OrderController {
                 HttpStatus.OK
         );
     }
+
+
+    @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
+    public ResponseEntity<Order> getOrder(@PathVariable("id") String id) throws JsonProcessingException {
+        responseHeaders.add("Content-Type", "application/json;charset=UTF-8");
+
+        id = "#-" + id;
+        System.out.println(id);
+        Order find = service.exists(id);
+
+        return new ResponseEntity<>(
+                find,
+                responseHeaders,
+                HttpStatus.OK
+        );
+    }
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public ResponseEntity<String> addOrder(@RequestBody() OrderDto body) throws JsonProcessingException {
         String json = "";
@@ -110,7 +126,6 @@ public class OrderController {
         responseHeaders.add("Content-Type", "application/json");
         Response rsp = new Response();
         number = "#-"+number;
-        System.out.println(number);
         Order find = service.exists(number);
         if(find != null){
             Order update = new Order();

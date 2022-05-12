@@ -23,9 +23,7 @@ public class StockService {
     
     public Stock add(Stock stck){
         Stock stk = new Stock();
-        
-        UUID uuid = UUID.randomUUID();
-        stk.setCorrelative(uuid.toString().toUpperCase());
+        stk.setCorrelative(getAll().size() + 1);
         stk.setEntryDate(stck.getEntryDate());
         stock.push(stk);
         return stk;

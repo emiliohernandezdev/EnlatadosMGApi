@@ -11,14 +11,14 @@ import java.util.Date;
  * @author emilio.hernandez
  */
 public class Stock {
-    private String correlative;
+    private int correlative;
     private Date entryDate;
 
-    public String getCorrelative() {
+    public int getCorrelative() {
         return correlative;
     }
 
-    public void setCorrelative(String correlative) {
+    public void setCorrelative(int correlative) {
         this.correlative = correlative;
     }
 

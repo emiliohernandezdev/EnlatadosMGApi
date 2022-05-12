@@ -93,7 +93,7 @@ public class Queue<T> {
                 aux.setNext(next);
             }
             length--;
-        }
+        }else remove(data);
     }
 
     public ArrayList<T> all(){
