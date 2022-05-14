@@ -11,112 +11,108 @@ import java.util.ArrayList;
  *
  * @author emilio.hernandez
  */
-
 public class AVLTree {
-    
+
     private AVLNode rootNode;
 
-    
-    public AVLTree(){
+    public AVLTree() {
         rootNode = null;
     }
-    
-    public void removeAll(){
+
+    public void removeAll() {
         rootNode = null;
     }
-    
-    public boolean isEmpty(){
-        if(rootNode == null)
+
+    public boolean isEmpty() {
+        if (rootNode == null) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
-    
-    public void insertElement(Client elem){
+
+    public void insertElement(Client elem) {
         rootNode = insertElement(rootNode, elem);
     }
-    
-    public void deleteElement(Long key){
+
+    public void deleteElement(Long key) {
         rootNode = delete(rootNode, key);
     }
-    
-    
-    public String Graph(){
+
+    public String Graph() {
         return rootNode.toGraphviz();
     }
 
-    
-    private AVLNode insertElement(AVLNode node, Client cl){
-        if (node == null)
+    private AVLNode insertElement(AVLNode node, Client cl) {
+        if (node == null) {
             return (new AVLNode(cl));
- 
-        if (Long.parseLong(cl.getCui()) < Long.parseLong(node.element.getCui()))
+        }
+
+        if (Long.parseLong(cl.getCui()) < Long.parseLong(node.element.getCui())) {
             node.leftChild = insertElement(node.leftChild, cl);
-        else if (Long.parseLong(cl.getCui()) > Long.parseLong(node.element.getCui()))
+        } else if (Long.parseLong(cl.getCui()) > Long.parseLong(node.element.getCui())) {
             node.rightChild = insertElement(node.rightChild, cl);
-        else 
+        } else {
             return node;
+        }
 
         node.height = 1 + max(height(node.leftChild),
-                            height(node.rightChild));
+                height(node.rightChild));
 
         int balance = getBalance(node);
 
-        if (balance > 1 && Long.parseLong(cl.getCui()) < Long.parseLong(node.leftChild.element.getCui()))
+        if (balance > 1 && Long.parseLong(cl.getCui()) < Long.parseLong(node.leftChild.element.getCui())) {
             return rightRotate(node);
+        }
 
-        if (balance < -1 && Long.parseLong(cl.getCui()) > Long.parseLong(node.rightChild.element.getCui()))
+        if (balance < -1 && Long.parseLong(cl.getCui()) > Long.parseLong(node.rightChild.element.getCui())) {
             return leftRotate(node);
- 
-        if (balance > 1 && Long.parseLong(cl.getCui()) > Long.parseLong(node.leftChild.element.getCui()))
-        {
+        }
+
+        if (balance > 1 && Long.parseLong(cl.getCui()) > Long.parseLong(node.leftChild.element.getCui())) {
             node.leftChild = leftRotate(node.leftChild);
             return rightRotate(node);
         }
 
-        if (balance < -1 && Long.parseLong(cl.getCui()) < Long.parseLong(node.rightChild.element.getCui()))
-        {
+        if (balance < -1 && Long.parseLong(cl.getCui()) < Long.parseLong(node.rightChild.element.getCui())) {
             node.rightChild = rightRotate(node.rightChild);
             return leftRotate(node);
         }
         System.out.println(rootNode.toGraphviz());
         return node;
     }
-    private int height(AVLNode n){
+
+    private int height(AVLNode n) {
         return n == null ? -1 : n.height;
     }
-    
-    private int getBalance(AVLNode n){
+
+    private int getBalance(AVLNode n) {
         return (n == null) ? 0 : height(n.rightChild) - height(n.leftChild);
     }
-    private void updateHeight(AVLNode n){
+
+    private void updateHeight(AVLNode n) {
         n.height = 1 + Math.max(height(n.leftChild), height(n.rightChild));
     }
-    
-    
-    private AVLNode minValueNode(AVLNode node)
-    {
+
+    private AVLNode minValueNode(AVLNode node) {
         AVLNode current = node;
-        while (current.leftChild != null)
-        current = current.leftChild;
- 
+        while (current.leftChild != null) {
+            current = current.leftChild;
+        }
+
         return current;
     }
-    
-    int max(int a, int b)
-    {
+
+    int max(int a, int b) {
         return (a > b) ? a : b;
     }
-    
-    
-    AVLNode leftRotate(AVLNode x)
-    {
+
+    AVLNode leftRotate(AVLNode x) {
         AVLNode y = x.rightChild;
         AVLNode T2 = y.leftChild;
 
         y.leftChild = x;
         x.rightChild = T2;
- 
 
         x.height = max(height(x.leftChild), height(x.rightChild)) + 1;
         y.height = max(height(y.leftChild), height(y.rightChild)) + 1;
@@ -124,9 +120,7 @@ public class AVLTree {
         return y;
     }
 
-    
-    private AVLNode rightRotate(AVLNode y)
-    {
+    private AVLNode rightRotate(AVLNode y) {
         AVLNode x = y.leftChild;
         AVLNode T2 = x.rightChild;
 
@@ -135,104 +129,93 @@ public class AVLTree {
 
         y.height = max(height(y.leftChild), height(y.rightChild)) + 1;
         x.height = max(height(x.leftChild), height(x.rightChild)) + 1;
- 
+
         return x;
     }
-    private AVLNode delete(AVLNode root, long key){
-        if (root == null)
+
+    private AVLNode delete(AVLNode root, long key) {
+        if (root == null) {
             return root;
-        if (key < Long.parseLong(root.element.getCui()))
-            root.leftChild = delete(root.leftChild, key);
-
-        else if (key > Long.parseLong(root.element.getCui()))
-            root.rightChild = delete(root.rightChild, key);
- 
-        else
-        {
-            if ((root.leftChild == null) || (root.rightChild == null))
-            {
-                AVLNode temp = null;
-                if (temp == root.leftChild)
-                    temp = root.rightChild;
-                else
-                    temp = root.leftChild;
-                if (temp == null)
-                {
-                    temp = root;
-                    root = null;
-                }
-                else 
-                    root = temp;
-            }
-            else
-            {
- 
-                AVLNode temp = minValueNode(root.rightChild);
-                root.element.setCui(temp.element.getCui());
-
-                root.rightChild = delete(root.rightChild, Long.parseLong(temp.element.getCui()));
-            }
         }
- 
-        if (root == null)
+
+        if ((root.leftChild == null) || (root.rightChild == null)) {
+            AVLNode temp = null;
+            if (temp == root.leftChild) {
+                temp = root.rightChild;
+            } else {
+                temp = root.leftChild;
+            }
+            if (temp == null) {
+                temp = root;
+                root = null;
+            } else {
+                root = temp;
+            }
+        } else {
+
+            AVLNode temp = minValueNode(root.rightChild);
+            root.element.setCui(temp.element.getCui());
+
+            root.rightChild = delete(root.rightChild, Long.parseLong(temp.element.getCui()));
+        }
+
+        if (root == null) {
             return root;
+        }
         root.height = max(height(root.leftChild), height(root.rightChild)) + 1;
 
         int balance = getBalance(root);
- 
-        if (balance > 1 && getBalance(root.leftChild) >= 0)
+
+        if (balance > 1 && getBalance(root.leftChild) >= 0) {
             return rightRotate(root);
-        if (balance > 1 && getBalance(root.leftChild) < 0)
-        {
+        }
+        if (balance > 1 && getBalance(root.leftChild) < 0) {
             root.leftChild = leftRotate(root.leftChild);
             return rightRotate(root);
         }
- 
-        if (balance < -1 && getBalance(root.rightChild) <= 0)
+
+        if (balance < -1 && getBalance(root.rightChild) <= 0) {
             return leftRotate(root);
- 
-        if (balance < -1 && getBalance(root.rightChild) > 0)
-        {
+        }
+
+        if (balance < -1 && getBalance(root.rightChild) > 0) {
             root.rightChild = rightRotate(root.rightChild);
             return leftRotate(root);
         }
- 
+
         return root;
     }
-    
 
-    
-    
-    public boolean searchElement(Client element)  
-    {  
-        return searchElement(rootNode, element);  
-    }  
-    
-    public AVLNode find(Long key){
+    public boolean searchElement(Client element) {
+        return searchElement(rootNode, element);
+    }
+
+    public AVLNode find(Long key) {
         AVLNode temp = search(rootNode, key);
         return temp != null ? temp : null;
     }
-    
-    private AVLNode search(AVLNode root, Long key){
-        if(root == null || Long.parseLong(root.element.getCui()) == key)
+
+    private AVLNode search(AVLNode root, Long key) {
+        if (root == null || Long.parseLong(root.element.getCui()) == key) {
             return root;
-        
-        if(Long.parseLong(root.element.getCui()) < key)
+        }
+
+        if (Long.parseLong(root.element.getCui()) < key) {
             return search(root.rightChild, key);
-        
+        }
+
         return search(root.leftChild, key);
     }
-    
-    private boolean searchElement(AVLNode head, Client search){
+
+    private boolean searchElement(AVLNode head, Client search) {
         boolean check = false;
-        while((head != null) && !check){
+        while ((head != null) && !check) {
             Client headElement = head.element;
-            if(Long.parseLong(search.getCui()) < Long.parseLong(headElement.getCui()))
+            if (Long.parseLong(search.getCui()) < Long.parseLong(headElement.getCui())) {
                 head = head.leftChild;
-            else if(Long.parseLong(search.getCui()) > Long.parseLong(headElement.getCui())){
+            } else if (Long.parseLong(search.getCui()) > Long.parseLong(headElement.getCui())) {
                 head = head.rightChild;
-            }
-            else{
+            } else {
                 check = true;
                 break;
             }
@@ -240,63 +223,73 @@ public class AVLTree {
         }
         return check;
     }
-    
-    public ArrayList<Client> all(String order){
+
+    public ArrayList<Client> all(String order) {
         return new ArrayList<>();
     }
-    
+
     private ArrayList<Client> clients = new ArrayList<>();
-    
-    public ArrayList<Client> getAllByOrder(String order){
-        if(!clients.isEmpty()) clients.clear();
-        switch(order){
+
+    public ArrayList<Client> getAllByOrder(String order) {
+        if (!clients.isEmpty()) {
+            clients.clear();
+        }
+        switch (order) {
             case "preOrder":
                 System.out.println("preOrder");
                 preOrder(rootNode);
                 break;
-                
+
             case "inOrder":
                 System.out.println("inOrder");
                 inOrder(rootNode);
                 break;
-            
+
             case "posOrder":
                 System.out.println("posOrder");
                 posOrder(rootNode);
                 break;
-                
+
             default:
                 inOrder(rootNode);
                 break;
         }
         return clients;
     }
-    
-    public ArrayList<Client> getAllByOrder(){
-        if(!clients.isEmpty()) clients.clear();
+
+    public ArrayList<Client> getAllByOrder() {
+        if (!clients.isEmpty()) {
+            clients.clear();
+        }
         inOrder(rootNode);
         return clients;
     }
-    
-    private void preOrder(AVLNode node){
-        if(node == null) return;
+
+    private void preOrder(AVLNode node) {
+        if (node == null) {
+            return;
+        }
         clients.add(node.element);
         preOrder(node.leftChild);
         preOrder(node.rightChild);
     }
-    private void inOrder(AVLNode node){
-        if(node == null) return;
+
+    private void inOrder(AVLNode node) {
+        if (node == null) {
+            return;
+        }
         inOrder(node.leftChild);
         clients.add(node.element);
         inOrder(node.rightChild);
     }
-    
-    private void posOrder(AVLNode node){
-        if(node == null) return;
+
+    private void posOrder(AVLNode node) {
+        if (node == null) {
+            return;
+        }
         posOrder(node.leftChild);
         posOrder(node.rightChild);
         clients.add(node.element);
     }
-    
-    
+
 }
