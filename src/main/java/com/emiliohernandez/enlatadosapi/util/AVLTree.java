@@ -93,26 +93,6 @@ public class AVLTree {
         n.height = 1 + Math.max(height(n.leftChild), height(n.rightChild));
     }
     
-    private AVLNode rotateLeft(AVLNode y){
-        AVLNode x = y.rightChild;
-        AVLNode z = x.leftChild;
-        x.leftChild = y;
-        y.rightChild = z;
-        updateHeight(y);
-        updateHeight(x);
-        return x;
-    }
-    
-    private AVLNode rotateRight(AVLNode y){
-        AVLNode x = y.leftChild;
-        AVLNode z = x.rightChild;
-        x.rightChild = y;
-        y.leftChild = z;
-        updateHeight(y);
-        updateHeight(x);
-        return x;
-    }
-    
     
     private AVLNode minValueNode(AVLNode node)
     {
@@ -187,14 +167,9 @@ public class AVLTree {
             else
             {
  
-                // node with two children: Get the inorder
-                // successor (smallest in the right subtree)
                 AVLNode temp = minValueNode(root.rightChild);
- 
-                // Copy the inorder successor's data to this node
                 root.element.setCui(temp.element.getCui());
- 
-                // Delete the inorder successor
+
                 root.rightChild = delete(root.rightChild, Long.parseLong(temp.element.getCui()));
             }
         }
@@ -225,24 +200,8 @@ public class AVLTree {
         return root;
     }
     
-    
-    
-    
-    public int getNodes(){
-        return getNodes(rootNode);
-    }
 
     
-    private int getNodes(AVLNode head){
-        if(head == null)
-            return 0;
-        else{
-            int length = 1;
-            length = length + getNodes(head.leftChild);
-            length = length + getNodes(head.rightChild);
-            return length;
-        }
-    }
     
     public boolean searchElement(Client element)  
     {  
