@@ -56,7 +56,6 @@ public class AVLTree {
 
     
     private AVLNode insertElement(AVLNode node, long key){
-        /* 1. Perform the normal BST rotation */
         if (node == null)
             return (new AVLNode());
  
@@ -83,14 +82,13 @@ public class AVLTree {
             node.leftChild = leftRotate(node.leftChild);
             return rightRotate(node);
         }
- 
-        // Right Left Case
+
         if (balance < -1 && key < Long.parseLong(node.rightChild.element.getCui()))
         {
             node.rightChild = rightRotate(node.rightChild);
             return leftRotate(node);
         }
-
+        System.out.println(node.toGraphviz());
         return node;
     }
     private int height(AVLNode n){
