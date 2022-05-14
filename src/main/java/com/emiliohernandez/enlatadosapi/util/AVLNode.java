@@ -39,6 +39,7 @@ public class AVLNode{
         this.id = correlativo++;
     }
     
+    
     public String toGraphviz(){
         return "digraph Clients{\n" + 
                 "rankdir=TB;\n"

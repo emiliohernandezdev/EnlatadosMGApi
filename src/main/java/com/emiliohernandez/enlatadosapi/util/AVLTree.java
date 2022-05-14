@@ -33,7 +33,7 @@ public class AVLTree {
     }
     
     public void insertElement(Client elem){
-        rootNode = insertElement(elem, rootNode);
+        rootNode = insertElement(rootNode, Long.parseLong(elem.getCui()));
     }
     
     public void deleteElement(Long key){
@@ -55,28 +55,42 @@ public class AVLTree {
     }
 
     
-    private AVLNode insertElement(Client element, AVLNode node){
-        if(node == null)
-            node = new AVLNode(element);
-        else if(Long.parseLong(element.getCui()) < Long.parseLong(node.element.getCui())){
-            node.leftChild = insertElement(element, node.leftChild);
-            if(getHeight(node.leftChild) - getHeight(node.rightChild) == 2)
-                if(Long.parseLong(element.getCui()) < Long.parseLong(node.leftChild.element.getCui()))
-                    node = rotateWithLeftChild(node);
-                else
-                    node = doubleWithLeftChild(node);
+    private AVLNode insertElement(AVLNode node, long key){
+        /* 1. Perform the normal BST rotation */
+        if (node == null)
+            return (new AVLNode());
+ 
+        if (key < Long.parseLong(node.element.getCui()))
+            node.leftChild = insertElement(node.leftChild, key);
+        else if (key > Long.parseLong(node.element.getCui()))
+            node.rightChild = insertElement(node.rightChild, key);
+        else 
+            return node;
+
+        node.height = 1 + max(height(node.leftChild),
+                            height(node.rightChild));
+
+        int balance = getBalance(node);
+
+        if (balance > 1 && key < Long.parseLong(node.leftChild.element.getCui()))
+            return rightRotate(node);
+
+        if (balance < -1 && key > Long.parseLong(node.rightChild.element.getCui()))
+            return leftRotate(node);
+ 
+        if (balance > 1 && key > Long.parseLong(node.leftChild.element.getCui()))
+        {
+            node.leftChild = leftRotate(node.leftChild);
+            return rightRotate(node);
         }
-        else if(Long.parseLong(element.getCui()) > Long.parseLong(node.element.getCui())){
-            node.rightChild = insertElement(element, node.rightChild);
-            if(getHeight(node.rightChild) - getHeight(node.leftChild) == 2)
-                if(Long.parseLong(element.getCui()) > Long.parseLong(node.rightChild.element.getCui()))
-                    node = rotateWithRightChild(node);
-                else
-                    node = doubleWithRightChild(node);
+ 
+        // Right Left Case
+        if (balance < -1 && key < Long.parseLong(node.rightChild.element.getCui()))
+        {
+            node.rightChild = rightRotate(node.rightChild);
+            return leftRotate(node);
         }
-        else;
-        node.height = getMaxHeight(getHeight(node.leftChild), getHeight(node.rightChild)) + 1;
-        System.out.println(node.toGraphviz());
+
         return node;
     }
     private int height(AVLNode n){
@@ -129,36 +143,117 @@ public class AVLTree {
         }
         return z;
     }
-    private AVLNode delete(AVLNode node, long key){
-        if(node == null){
-            return node;
-        }else if(Long.parseLong(node.element.getCui()) > key){
-            node.leftChild = delete(node.leftChild, key);
-        }else if(Long.parseLong(node.element.getCui()) < key){
-            node.rightChild = delete(node.rightChild, key);
-        }else{
-            if(node.leftChild == null || node.rightChild == null){
-                node = (node.leftChild == null) ? node.rightChild : node.leftChild;
-            }else{
-                AVLNode tmp = mostLeftChild(node.rightChild);
-                node.element.setCui(tmp.element.getCui());
-                node.rightChild = delete(node.rightChild, Long.parseLong(node.element.getCui()));
-            }
-        }
-        if(node != null){
-            node = rebalance(node);
-        }
-        return node;
-    }
     
-    private AVLNode mostLeftChild(AVLNode node) {
+    private AVLNode minValueNode(AVLNode node)
+    {
         AVLNode current = node;
-        while (current.leftChild != null) {
-            current = current.leftChild;
-        }
+        while (current.leftChild != null)
+        current = current.leftChild;
+ 
         return current;
     }
     
+    int max(int a, int b)
+    {
+        return (a > b) ? a : b;
+    }
+    
+    
+    AVLNode leftRotate(AVLNode x)
+    {
+        AVLNode y = x.rightChild;
+        AVLNode T2 = y.leftChild;
+
+        y.leftChild = x;
+        x.rightChild = T2;
+ 
+
+        x.height = max(height(x.leftChild), height(x.rightChild)) + 1;
+        y.height = max(height(y.leftChild), height(y.rightChild)) + 1;
+
+        return y;
+    }
+
+    
+    private AVLNode rightRotate(AVLNode y)
+    {
+        AVLNode x = y.leftChild;
+        AVLNode T2 = x.rightChild;
+
+        x.rightChild = y;
+        y.leftChild = T2;
+
+        y.height = max(height(y.leftChild), height(y.rightChild)) + 1;
+        x.height = max(height(x.leftChild), height(x.rightChild)) + 1;
+ 
+        return x;
+    }
+    private AVLNode delete(AVLNode root, long key){
+        if (root == null)
+            return root;
+        if (key < Long.parseLong(root.element.getCui()))
+            root.leftChild = delete(root.leftChild, key);
+
+        else if (key > Long.parseLong(root.element.getCui()))
+            root.rightChild = delete(root.rightChild, key);
+ 
+        else
+        {
+            if ((root.leftChild == null) || (root.rightChild == null))
+            {
+                AVLNode temp = null;
+                if (temp == root.leftChild)
+                    temp = root.rightChild;
+                else
+                    temp = root.leftChild;
+                if (temp == null)
+                {
+                    temp = root;
+                    root = null;
+                }
+                else 
+                    root = temp;
+            }
+            else
+            {
+ 
+                // node with two children: Get the inorder
+                // successor (smallest in the right subtree)
+                AVLNode temp = minValueNode(root.rightChild);
+ 
+                // Copy the inorder successor's data to this node
+                root.element.setCui(temp.element.getCui());
+ 
+                // Delete the inorder successor
+                root.rightChild = delete(root.rightChild, Long.parseLong(temp.element.getCui()));
+            }
+        }
+ 
+        if (root == null)
+            return root;
+        root.height = max(height(root.leftChild), height(root.rightChild)) + 1;
+
+        int balance = getBalance(root);
+ 
+        if (balance > 1 && getBalance(root.leftChild) >= 0)
+            return rightRotate(root);
+        if (balance > 1 && getBalance(root.leftChild) < 0)
+        {
+            root.leftChild = leftRotate(root.leftChild);
+            return rightRotate(root);
+        }
+ 
+        if (balance < -1 && getBalance(root.rightChild) <= 0)
+            return leftRotate(root);
+ 
+        if (balance < -1 && getBalance(root.rightChild) > 0)
+        {
+            root.rightChild = rightRotate(root.rightChild);
+            return leftRotate(root);
+        }
+ 
+        return root;
+    }
     
     
     private AVLNode rotateWithLeftChild(AVLNode node){
