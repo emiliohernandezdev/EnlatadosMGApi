@@ -33,36 +33,27 @@ public class AVLTree {
     }
     
     public void insertElement(Client elem){
-        rootNode = insertElement(rootNode, Long.parseLong(elem.getCui()));
+        rootNode = insertElement(rootNode, elem);
     }
     
     public void deleteElement(Long key){
         rootNode = delete(rootNode, key);
     }
     
-    private int getHeight(AVLNode node){
-        return node == null ? -1 : node.height;
-    }
-    
-    private int getMaxHeight(int leftNodeHeight, int rightNodeHeight)  
-    {  
-    return leftNodeHeight > rightNodeHeight ? leftNodeHeight : rightNodeHeight;  
-    }  
-      
     
     public String Graph(){
         return rootNode.toGraphviz();
     }
 
     
-    private AVLNode insertElement(AVLNode node, long key){
+    private AVLNode insertElement(AVLNode node, Client cl){
         if (node == null)
-            return (new AVLNode());
+            return (new AVLNode(cl));
  
-        if (key < Long.parseLong(node.element.getCui()))
-            node.leftChild = insertElement(node.leftChild, key);
-        else if (key > Long.parseLong(node.element.getCui()))
-            node.rightChild = insertElement(node.rightChild, key);
+        if (Long.parseLong(cl.getCui()) < Long.parseLong(node.element.getCui()))
+            node.leftChild = insertElement(node.leftChild, cl);
+        else if (Long.parseLong(cl.getCui()) > Long.parseLong(node.element.getCui()))
+            node.rightChild = insertElement(node.rightChild, cl);
         else 
             return node;
 
@@ -71,24 +62,24 @@ public class AVLTree {
 
         int balance = getBalance(node);
 
-        if (balance > 1 && key < Long.parseLong(node.leftChild.element.getCui()))
+        if (balance > 1 && Long.parseLong(cl.getCui()) < Long.parseLong(node.leftChild.element.getCui()))
             return rightRotate(node);
 
-        if (balance < -1 && key > Long.parseLong(node.rightChild.element.getCui()))
+        if (balance < -1 && Long.parseLong(cl.getCui()) > Long.parseLong(node.rightChild.element.getCui()))
             return leftRotate(node);
  
-        if (balance > 1 && key > Long.parseLong(node.leftChild.element.getCui()))
+        if (balance > 1 && Long.parseLong(cl.getCui()) > Long.parseLong(node.leftChild.element.getCui()))
         {
             node.leftChild = leftRotate(node.leftChild);
             return rightRotate(node);
         }
 
-        if (balance < -1 && key < Long.parseLong(node.rightChild.element.getCui()))
+        if (balance < -1 && Long.parseLong(cl.getCui()) < Long.parseLong(node.rightChild.element.getCui()))
         {
             node.rightChild = rightRotate(node.rightChild);
             return leftRotate(node);
         }
-        System.out.println(node.toGraphviz());
+        System.out.println(rootNode.toGraphviz());
         return node;
     }
     private int height(AVLNode n){
@@ -121,26 +112,7 @@ public class AVLTree {
         updateHeight(x);
         return x;
     }
-    private AVLNode rebalance(AVLNode z){
-        updateHeight(z);
-        int balance = getBalance(z);
-        if(balance > 1 ){
-            if(height(z.rightChild.rightChild) > height(z.rightChild.leftChild)){
-                z = rotateLeft(z);
-            }else{
-                z.rightChild = rotateRight(z.rightChild);
-                z = rotateLeft(z);
-            }
-        }else if(balance <-1){
-            if(height(z.leftChild.leftChild) > height(z.leftChild.rightChild))
-                z = rotateRight(z);
-            else{
-                z.leftChild = rotateLeft(z.leftChild);
-                z = rotateRight(z);
-            }
-        }
-        return z;
-    }
+    
     
     private AVLNode minValueNode(AVLNode node)
     {
@@ -254,33 +226,6 @@ public class AVLTree {
     }
     
     
-    private AVLNode rotateWithLeftChild(AVLNode node){
-        AVLNode nodeP = node.leftChild;
-        node.leftChild = nodeP.rightChild;
-        nodeP.rightChild = node;
-        node.height = getMaxHeight(getHeight(node.leftChild), getHeight(node.rightChild)) + 1;
-        nodeP.height = getMaxHeight(getHeight(nodeP.leftChild), node.height) + 1;
-        return nodeP;
-    }
-    
-    private AVLNode rotateWithRightChild(AVLNode node){
-        AVLNode aux = node.rightChild;
-        node.rightChild = aux.leftChild;
-        aux.leftChild = node;
-        node.height = getMaxHeight(getHeight(node.leftChild), getHeight(node.rightChild)) +1 ;
-        aux.height = getMaxHeight(getHeight(aux.rightChild), node.height) + 1;
-        return aux;
-    }
-    
-    private AVLNode doubleWithLeftChild(AVLNode node){
-        node.leftChild = rotateWithRightChild(node.leftChild);
-        return rotateWithLeftChild(node);
-    }
-    
-    private AVLNode doubleWithRightChild(AVLNode node){
-        node.rightChild = rotateWithLeftChild(node.rightChild);
-        return rotateWithRightChild(node);
-    }
     
     
     public int getNodes(){
