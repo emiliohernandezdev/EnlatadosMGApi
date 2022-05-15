@@ -24,11 +24,7 @@ public class AVLTree {
     }
 
     public boolean isEmpty() {
-        if (rootNode == null) {
-            return true;
-        } else {
-            return false;
-        }
+        return rootNode == null;
     }
 
     public void insertElement(Client elem) {

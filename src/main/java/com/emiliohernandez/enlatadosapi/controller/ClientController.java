@@ -68,10 +68,10 @@ public class ClientController {
     public ResponseEntity<String> deleteClient(@PathVariable Long id) throws JsonProcessingException {
         String json = "";
         responseHeaders.add("Content-Type", "application/json");
-        service.delete(id);
+        boolean deletion = service.delete(id);
         Response rsp = new Response();
         rsp.setMessage("Cliente eliminado!");
-        rsp.setResult(null);
+        rsp.setResult(deletion);
         rsp.setSuccess(Boolean.TRUE);
         json = om.writeValueAsString(rsp);
         return new ResponseEntity<>(
@@ -152,10 +152,14 @@ public class ClientController {
 
     @RequestMapping(value = "/graphviz", method = RequestMethod.GET)
     public ResponseEntity<String> getGraph() throws JsonProcessingException, Exception {
+        Object json = "";
         String data = service.graph();
-        //responseHeaders.add("Content-Type", "application/json");
+        responseHeaders.add("Content-Type", "application/json");
+        Response rsp = new Response();
+
+        json = om.writeValueAsString(data);
         return new ResponseEntity<>(
-                data,
+                json.toString(),
                 responseHeaders,
                 HttpStatus.OK
         );

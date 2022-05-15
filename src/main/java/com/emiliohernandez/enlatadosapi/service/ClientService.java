@@ -58,8 +58,12 @@ public class ClientService {
         return null;
     }
 
-    public void delete(Long key) {
-        clients.deleteElement(key);
+    public boolean delete(Long key) {
+        if(clients.find(key) != null){
+            clients.deleteElement(key);
+            return true;
+        }
+        return false;
     }
 
     public boolean exists(Client c) {
