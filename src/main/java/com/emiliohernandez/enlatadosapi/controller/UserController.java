@@ -8,12 +8,15 @@ import com.emiliohernandez.enlatadosapi.bean.User;
 import com.emiliohernandez.enlatadosapi.dto.UserDto;
 import com.emiliohernandez.enlatadosapi.service.UserService;
 import com.emiliohernandez.enlatadosapi.util.AuthResponse;
+import com.emiliohernandez.enlatadosapi.util.JwtUtil;
 import com.emiliohernandez.enlatadosapi.util.Response;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+
+import org.bouncycastle.cert.ocsp.Req;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +38,29 @@ public class UserController {
     private UserService service = new UserService();
     private ObjectMapper om = new ObjectMapper();
     public HttpHeaders responseHeaders = new HttpHeaders();
+
+    @RequestMapping(value="/profile", method = RequestMethod.GET)
+    public ResponseEntity<String> userProfile(HttpServletRequest req) throws  JsonProcessingException{
+        //Obtener token
+        JwtUtil util = new JwtUtil();
+        String token = req.getHeader("Authorization");
+        Object data = util.getInfoToken(token);
+        User verify = service.exists(data.id);
+        String json = "";
+        User result = null;
+        if(verify != null){
+            result = verify;
+        }else{
+            result = null;
+        }
+
+        json = om.writeValueAsString(result);
+        return  new ResponseEntity<>(
+          json,
+          responseHeaders,
+          HttpStatus.OK
+        );
+    }
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public ResponseEntity<List<User>> obtenerUsuario(HttpServletRequest req) throws JsonProcessingException {

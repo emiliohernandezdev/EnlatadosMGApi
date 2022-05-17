@@ -12,7 +12,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.Date;
 import java.util.UUID;
-
 /**
  *
  * @author emilio.hernandez
@@ -40,5 +39,12 @@ public class JwtUtil {
         .compact();
         
         return jwtToken;
+    }
+
+    public Object getInfoToken(String token){
+        String[] parts = token.split("\\.");
+        String b64Payload = parts[1];
+        String jsonString = new String(Base64.decodeBase64(b64payload), "UTF-8");
+        return new Object();
     }
 }
