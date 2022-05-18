@@ -4,6 +4,7 @@
  */
 package com.emiliohernandez.enlatadosapi.util;
 
+import com.emiliohernandez.enlatadosapi.bean.Client;
 import com.emiliohernandez.enlatadosapi.bean.User;
 import java.io.*;
 import java.util.ArrayList;
@@ -35,13 +36,13 @@ public class LinkedList<T> {
         this.length = 0;
     }
     
-    
-    
+
+
     public boolean find(T obj){
         Node<T> aux = head;
-        
+
         boolean finded = false;
-        
+
         while(aux != null && finded != true){
             if(obj == aux.getData()){
                 finded = true;
@@ -51,15 +52,18 @@ public class LinkedList<T> {
         }
         return finded;
     }
-    
+
     public T update(T data, T update){
         Node<T> aux = head;
-        if(find(data) != true){
+
+        if(find(data)){
             while(aux.getData() != data){
                 aux = aux.getNext();
             }
-            aux.setData(data);
+            aux.setData(update);
         }
+
+
         return aux.getData();
     }
     
@@ -181,6 +185,7 @@ public class LinkedList<T> {
     public int length(){
         return this.length;
     }
+
 }
 
 

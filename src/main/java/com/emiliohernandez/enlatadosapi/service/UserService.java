@@ -25,13 +25,7 @@ public class UserService {
     private LinkedList<User> usersList = new LinkedList();
 
     public ArrayList<User> getUsers() {
-        ArrayList<User> result= usersList.all();
-        if(result.size() > 0){
-            return usersList.all();
-        }else{
-            return new ArrayList<User>();
-        }
-        
+        return usersList.all();
     }
 
     public boolean exists(User u) {
@@ -53,6 +47,23 @@ public class UserService {
         return null;
 }
 
+
+    public String getGraphviz(){
+        String result = "digraph Users{\n" +
+                "rankdir=TB;\n"
+                + "node [shape = box, style=filled];\n";
+        int i=0;
+        for(User usr : usersList.all()){
+            i+=1;
+            result += i+ " " +"[ label =\""+usr.getId() + " - " + usr.getName() + " " +usr.getSurname() + "\"];\n";
+        }
+        for(int k=2; k<=usersList.length(); k++){
+            result += (k-1) + "->" + k + "; \n"+ "\n";
+        }
+        result += "}";
+        return result;
+    }
+
     public User addUser(int id, String name, String surname, String password) throws Exception {
         User user = new User();
         user.setId(id);
@@ -64,7 +75,19 @@ public class UserService {
             return user;
         }
         return null;
+    }
 
+    public boolean deleteUser(int id){
+        User find = exists(String.valueOf(id));
+        usersList.remove(find);
+        return true;
+    }
+
+    public User update(int id, User update){
+        User find = exists(String.valueOf(id));
+
+        User alter = usersList.update(find, update);
+        return alter;
     }
 
     public AuthResponse doLogin(String id, String password) {

@@ -42,9 +42,7 @@ public class JwtUtil {
     }
 
     public Object getInfoToken(String token){
-        String[] parts = token.split("\\.");
-        String b64Payload = parts[1];
-        String jsonString = new String(Base64.decodeBase64(b64payload), "UTF-8");
+
         return new Object();
     }
 }
