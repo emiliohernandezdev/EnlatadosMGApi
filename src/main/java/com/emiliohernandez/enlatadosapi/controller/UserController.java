@@ -19,6 +19,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.apache.commons.codec.binary.Base64;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Enumeration;
 import java.util.List;
@@ -176,8 +178,10 @@ public class UserController {
 
         responseHeaders.add("Content-Type", "application/json");
 
+        String graph = service.getGraphviz();
+
         return new ResponseEntity<>(
-                service.getGraphviz(),
+                URLEncoder.encode(graph, StandardCharsets.UTF_8.toString()),
                 responseHeaders,
                 HttpStatus.OK
         );
