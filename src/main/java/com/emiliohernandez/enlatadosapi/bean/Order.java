@@ -11,57 +11,47 @@ import java.util.Date;
  * @author emilio.hernandez
  */
 public class Order {
-    private String orderNumber;
-    private String originDepartment;
-    private String destinationDepartment;
-    private Date startDate;
+
+    private String number;
+    private String origin;
+    private String destination;
+    private Date date;
     private Client client;
     private Dealer dealer;
     private Vehicle vehicle;
-    private Stock boxes;
     private String status;
-    
-    public Order(String orderNumber, String originDepartment, String destinationDepartment, Date startDate, Client client, Dealer dealer, Vehicle vehicle, String status) {
-        this.orderNumber = orderNumber;
-        this.originDepartment = originDepartment;
-        this.destinationDepartment = destinationDepartment;
-        this.startDate = startDate;
-        this.client = client;
-        this.dealer = dealer;
-        this.vehicle = vehicle;
-        this.status = status;
+    private Stock stock;
+
+    public String getNumber() {
+        return number;
     }
 
-    public String getOrderNumber() {
-        return orderNumber;
+    public void setNumber(String number) {
+        this.number = number;
     }
 
-    public void setOrderNumber(String orderNumber) {
-        this.orderNumber = orderNumber;
+    public String getOrigin() {
+        return origin;
     }
 
-    public String getOriginDepartment() {
-        return originDepartment;
+    public void setOrigin(String origin) {
+        this.origin = origin;
     }
 
-    public void setOriginDepartment(String originDepartment) {
-        this.originDepartment = originDepartment;
+    public String getDestination() {
+        return destination;
     }
 
-    public String getDestinationDepartment() {
-        return destinationDepartment;
+    public void setDestination(String destination) {
+        this.destination = destination;
     }
 
-    public void setDestinationDepartment(String destinationDepartment) {
-        this.destinationDepartment = destinationDepartment;
+    public Date getDate() {
+        return date;
     }
 
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public Client getClient() {
@@ -96,5 +86,11 @@ public class Order {
         this.status = status;
     }
 
-    
+    public Stock getStock() {
+        return stock;
+    }
+
+    public void setStock(Stock stock) {
+        this.stock = stock;
+    }
 }

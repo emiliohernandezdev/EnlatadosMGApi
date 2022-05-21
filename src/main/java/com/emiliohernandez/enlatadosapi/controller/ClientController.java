@@ -7,7 +7,6 @@ package com.emiliohernandez.enlatadosapi.controller;
 import com.emiliohernandez.enlatadosapi.bean.Client;
 import com.emiliohernandez.enlatadosapi.dto.ClientDto;
 import com.emiliohernandez.enlatadosapi.service.ClientService;
-import com.emiliohernandez.enlatadosapi.util.GraphResponse;
 import com.emiliohernandez.enlatadosapi.util.Response;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,7 +15,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -156,24 +155,13 @@ public class ClientController {
     @RequestMapping(value = "/graphviz", method = RequestMethod.GET)
     public ResponseEntity<String> getGraph() throws JsonProcessingException, Exception {
 
-        String json = "";
         responseHeaders.add("Content-Type", "application/json");
-        Response rsp = new Response();
-        try{
-            String data = service.graph();
-            rsp.setMessage("Graph obtenido.");
-            rsp.setResult(URLEncoder.encode(data, "UTF-8"));
-            rsp.setSuccess(Boolean.TRUE);
+        String data = service.graph();
 
-            json = om.writeValueAsString(rsp);
-        }catch(JsonProcessingException js){
-            System.out.println(js);
-            json = om.writeValueAsString(js.getMessage());
-        }
 
 
         return new ResponseEntity<>(
-                json,
+                URLEncoder.encode(data, StandardCharsets.UTF_8.toString()),
                 responseHeaders,
                 HttpStatus.OK
         );

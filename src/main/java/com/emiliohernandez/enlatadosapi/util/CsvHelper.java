@@ -60,7 +60,6 @@ public class CsvHelper {
             for(CSVRecord record: records){
                 Dealer dealer = new Dealer();
                 String[] split = record.get(0).split(";");
-                System.out.println(split.length);
                 dealer.setCui(split[0]);
                 dealer.setName(split[1]);
                 dealer.setSurname(split[2]);
@@ -82,7 +81,6 @@ public class CsvHelper {
             for(CSVRecord record: records){
                 Client client = new Client();
                 String[] split = record.get(0).split(";");
-                System.out.println(split.length);
                 client.setCui(split[0]);
                 client.setName(split[1]);
                 client.setSurname(split[2]);

@@ -26,8 +26,6 @@ import java.util.Enumeration;
 import java.util.List;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
-
-import org.bouncycastle.cert.ocsp.Req;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -179,13 +177,15 @@ public class UserController {
         responseHeaders.add("Content-Type", "application/json");
 
         String graph = service.getGraphviz();
-
+        System.out.println(graph);
         return new ResponseEntity<>(
                 URLEncoder.encode(graph, StandardCharsets.UTF_8.toString()),
                 responseHeaders,
                 HttpStatus.OK
         );
     }
+
+
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseEntity<String> addUser(@RequestBody() UserDto body) throws JsonProcessingException, Exception {

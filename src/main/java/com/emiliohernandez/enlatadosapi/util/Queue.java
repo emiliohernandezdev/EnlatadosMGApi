@@ -49,16 +49,66 @@ public class Queue<T> {
         length--;
         return dato;
     }
-    
+
+    public boolean find(T obj){
+        Node<T> aux = start;
+
+        boolean finded = false;
+
+        while(aux != null && finded != true){
+            if(obj == aux.getData()){
+                finded = true;
+            }else{
+                aux = aux.getNext();
+            }
+        }
+        return finded;
+    }
+
+    public T update(T data, T update){
+        Node<T> aux = start;
+
+        if(find(data)){
+            while(aux.getData() != data){
+                aux = aux.getNext();
+            }
+            aux.setData(update);
+        }
+        return aux.getData();
+    }
+
+    public void remove(T data){
+        if(find(data) == true){
+            if(start.getData() == data){
+                start = start.getNext();
+            }else{
+                Node<T> aux = start;
+
+                while(aux.getNext().getData() != data){
+                    aux = aux.getNext();
+                }
+
+                Node next = aux.getNext().getNext();
+
+                aux.setNext(next);
+            }
+            length--;
+        }
+    }
+
     public ArrayList<T> all(){
         ArrayList<T> data = new ArrayList<>();
-        if(isEmpty()){
-            return new ArrayList<T>();
-        }
-        Node<T> actual = start;
-        while (actual != null) {
-            data.add(actual.data);
-            actual = actual.next;
+
+        if(!isEmpty()){
+            Node<T> aux = start;
+
+            int i = 0;
+
+            while(aux != null){
+                data.add(aux.getData());
+                aux = aux.getNext();
+                i++;
+            }
         }
         return data;
     }

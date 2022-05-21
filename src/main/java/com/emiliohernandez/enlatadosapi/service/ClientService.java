@@ -28,6 +28,8 @@ public class ClientService {
         return clients.getAllByOrder(order);
     }
 
+
+
     public Client add(Client client) {
         Client cl = new Client();
         cl.setCui(client.getCui());
@@ -47,6 +49,7 @@ public class ClientService {
     }
 
     public Client find(Long key) {
+
         AVLNode data = clients.find(key);
         if (data != null) {
             Client obtained = data.getElement();

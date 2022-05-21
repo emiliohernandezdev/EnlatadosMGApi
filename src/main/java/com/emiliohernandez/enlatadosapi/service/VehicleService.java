@@ -4,6 +4,8 @@
  */
 package com.emiliohernandez.enlatadosapi.service;
 
+import com.emiliohernandez.enlatadosapi.bean.Dealer;
+import com.emiliohernandez.enlatadosapi.bean.User;
 import com.emiliohernandez.enlatadosapi.bean.Vehicle;
 import com.emiliohernandez.enlatadosapi.util.CsvHelper;
 import com.emiliohernandez.enlatadosapi.util.Queue;
@@ -24,56 +26,97 @@ public class VehicleService {
     public ArrayList<Vehicle> getVehicles() {
         return vehicles.all();
     }
-    
-    public boolean existsById(String licensePlate) {
-        boolean find = false;
-        if (!vehicles.isEmpty()) {
-            for (Vehicle veh : getVehicles()) {
-                if (veh.getLicensePlate().equals(licensePlate)) {
-                    find = true;
-                }
-            }
+
+    public String getGraphviz(){
+        String result = "digraph Vehicle{\n" +
+                "rankdir=TB;\n"
+                + "node [shape = box, style=filled];\n";
+        int i=0;
+        for(Vehicle vh : vehicles.all()){
+            i+=1;
+            result += i+ " " +"[ label =\""+vh.getLicensePlate() + " - " + vh.getBrand() + " " + vh.getModel() + "\"];\n";
         }
-        return find;
+
+        for(int cont=vehicles.size(); cont>1; cont--){
+            result += (cont) + "->" + (cont-1) + "; \n"+ "\n";
+        }
+        result += "}";
+        System.out.println(result);
+        return result;
     }
-    
-    public boolean exists(Vehicle v) {
-        boolean find = false;
-        if (!vehicles.isEmpty()) {
-            for (Vehicle vh : getVehicles()) {
-                if (vh.getLicensePlate().equals(v.getLicensePlate())) {
-                    find = true;
-                }
+
+    public Vehicle findById(String licensePlate){
+        if(vehicles.isEmpty()) return null;
+        Vehicle isFinded = null;
+        for(Vehicle v: vehicles.all()){
+            if(v.getLicensePlate().equals(licensePlate)){
+                isFinded = v;
+            }
+            isFinded = findById(licensePlate);
+        }
+        return isFinded;
+    }
+
+
+    public Vehicle exists(String licensePlate) {
+        System.out.println("Param: " + licensePlate);
+        for (Vehicle veh : vehicles.all()) {
+            if (veh.getLicensePlate().equals(licensePlate)) {
+                return veh;
             }
         }
-        return find;
+        return null;
+    }
+
+    public boolean exists(Vehicle vh) {
+        boolean result = false;
+        for (Vehicle veh : vehicles.all()) {
+            if (veh.getLicensePlate().equals(vh.getLicensePlate())) {
+                 result= true;
+            }
+        }
+        return result;
     }
     
     public Vehicle add(String licensePlate, String brand, String model, String color, int year){
-        Vehicle vehi = new Vehicle();
-        vehi.setLicensePlate(licensePlate);
-        vehi.setBrand(brand);
-        vehi.setModel(model);
-        vehi.setColor(color);
-        vehi.setYear(year);
-        if (!existsById(vehi.getLicensePlate()) == true) {
-            vehicles.enqueue(vehi);
-            return vehi;
+        Vehicle vh = new Vehicle();
+        vh.setLicensePlate(licensePlate);
+        vh.setBrand(brand);
+        vh.setModel(model);
+        vh.setColor(color);
+        vh.setYear(year);
+
+        Vehicle exists = exists(vh.getLicensePlate());
+        if (exists == null) {
+            vehicles.enqueue(vh);
+            return vh;
         }  
         return null;
     }
-    
+
+    public Vehicle update(String license, Vehicle update){
+        Vehicle find = exists(license);
+        Vehicle alter = vehicles.update(find, update);
+        return alter;
+    }
+
+    public boolean delete(String licensePlate){
+        Vehicle find = exists(licensePlate);
+        vehicles.remove(find);
+        return true;
+    }
+
     public List<Vehicle> upload(InputStream is) {
         ArrayList<Vehicle> inserteds = new ArrayList<>();
 
         try {
             CsvHelper helper = new CsvHelper();
-            ArrayList<Vehicle> vehicles = (ArrayList<Vehicle>) helper.csvToVehicles(is);
-            vehicles.forEach((u) -> {
-                if (!exists(u)) {
+            ArrayList<Vehicle> uploadedVehicles = (ArrayList<Vehicle>) helper.csvToVehicles(is);
+            uploadedVehicles.forEach((v) -> {
+                if (!exists(v)) {
                     try {
-                        add(u.getLicensePlate(), u.getBrand(), u.getModel(), u.getColor(), u.getYear());
-                        inserteds.add(u);
+                        add(v.getLicensePlate(), v.getBrand(), v.getModel(), v.getColor(), v.getYear());
+                        inserteds.add(v);
                     } catch (Exception ex) {
                         Logger.getLogger(UserService.class.getName()).log(Level.SEVERE, null, ex);
                     }

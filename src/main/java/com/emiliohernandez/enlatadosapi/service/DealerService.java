@@ -5,8 +5,9 @@
 package com.emiliohernandez.enlatadosapi.service;
 
 import com.emiliohernandez.enlatadosapi.bean.Dealer;
+import com.emiliohernandez.enlatadosapi.bean.User;
+import com.emiliohernandez.enlatadosapi.bean.Vehicle;
 import com.emiliohernandez.enlatadosapi.util.CsvHelper;
-import com.emiliohernandez.enlatadosapi.util.JwtUtil;
 import com.emiliohernandez.enlatadosapi.util.Queue;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +26,15 @@ public class DealerService {
 
     public ArrayList<Dealer> getDealers() {
         return dealers.all();
+    }
+
+    public Dealer exists(String cui) {
+        for (Dealer dea : getDealers()) {
+            if (dea.getCui().equals(cui)) {
+                return dea;
+            }
+        }
+        return null;
     }
 
     public boolean exists(Dealer d) {
@@ -64,6 +74,18 @@ public class DealerService {
         }   
         return null;
     }
+
+    public Dealer update(String cui, Dealer update){
+        Dealer find = exists(cui);
+        Dealer alter = dealers.update(find, update);
+        return alter;
+    }
+
+    public boolean delete(String cui){
+        Dealer find = exists(cui);
+        dealers.remove(find);
+        return true;
+    }
     
     public Dealer remove() {
         return dealers.dequeue();
@@ -71,6 +93,25 @@ public class DealerService {
 
     public int size() {
         return dealers.size();
+    }
+
+
+    public String getGraphviz(){
+        String result = "digraph Dealers{\n" +
+                "rankdir=TB;\n"
+                + "node [shape = box, style=filled];\n";
+        int i=0;
+        for(Dealer dlr : dealers.all()){
+            i+=1;
+            result += i+ " " +"[ label =\""+dlr.getCui() + " - " + dlr.getName() + " " +dlr.getSurname() + "\"];\n";
+        }
+
+        for(int cont=size(); cont>1; cont--){
+            result += (cont) + "->" + (cont-1) + "; \n"+ "\n";
+        }
+        result += "}";
+        System.out.println(result);
+        return result;
     }
     
     public List<Dealer> upload(InputStream is) {

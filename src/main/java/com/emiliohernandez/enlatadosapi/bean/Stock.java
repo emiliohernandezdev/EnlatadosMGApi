@@ -14,15 +14,6 @@ public class Stock {
     private String correlative;
     private Date entryDate;
 
-    public Stock(){
-        
-    }
-    public Stock(String correlative, Date entryDate) {
-
-        this.correlative = correlative;
-        this.entryDate = entryDate;
-    }
-
     public String getCorrelative() {
         return correlative;
     }
