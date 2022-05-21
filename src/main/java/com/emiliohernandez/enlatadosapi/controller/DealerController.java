@@ -33,7 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/dealer")
 public class DealerController {
 
-    private DealerService service = new DealerService();
+    private DealerService service = DealerService.getInstance();
     private ObjectMapper om = new ObjectMapper();
     public HttpHeaders responseHeaders = new HttpHeaders();
     

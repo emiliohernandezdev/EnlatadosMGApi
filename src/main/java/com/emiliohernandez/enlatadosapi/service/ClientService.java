@@ -22,7 +22,18 @@ import java.util.logging.Logger;
  */
 public class ClientService {
 
-    private AVLTree clients = new AVLTree();
+    private static ClientService instance = null;
+    private AVLTree clients;
+    private ClientService(){
+        clients = new AVLTree();
+    }
+
+    public static ClientService getInstance() {
+        if(instance == null)
+            instance = new ClientService();
+
+        return instance;
+    }
 
     public ArrayList<Client> getClients(String order) {
         return clients.getAllByOrder(order);

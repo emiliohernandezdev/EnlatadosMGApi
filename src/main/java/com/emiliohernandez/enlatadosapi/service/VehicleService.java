@@ -7,6 +7,7 @@ package com.emiliohernandez.enlatadosapi.service;
 import com.emiliohernandez.enlatadosapi.bean.Dealer;
 import com.emiliohernandez.enlatadosapi.bean.User;
 import com.emiliohernandez.enlatadosapi.bean.Vehicle;
+import com.emiliohernandez.enlatadosapi.util.AVLTree;
 import com.emiliohernandez.enlatadosapi.util.CsvHelper;
 import com.emiliohernandez.enlatadosapi.util.Queue;
 import java.io.IOException;
@@ -20,8 +21,23 @@ import java.util.logging.Logger;
  * @author emilio.hernandez
  */
 public class VehicleService {
-    private Queue<Vehicle> vehicles = new Queue<Vehicle>();
-    
+    private static VehicleService instance = null;
+
+    private Queue<Vehicle> vehicles;
+    private VehicleService(){
+        vehicles = new Queue<>();
+    }
+
+    public static VehicleService getInstance() {
+        if(instance == null)
+            instance = new VehicleService();
+
+        return instance;
+    }
+
+    public void requeue(Vehicle vehicle){
+        vehicles.enqueue(vehicle);
+    }
     
     public ArrayList<Vehicle> getVehicles() {
         return vehicles.all();

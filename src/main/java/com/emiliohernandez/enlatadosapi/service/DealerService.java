@@ -21,8 +21,19 @@ import java.util.logging.Logger;
  * @author emilio.hernandez
  */
 public class DealerService {
+    private static DealerService instance = null;
+    private Queue<Dealer> dealers;
+    private DealerService(){
+        dealers = new Queue<Dealer>();
+    }
 
-    private Queue<Dealer> dealers = new Queue<Dealer>();
+    public static DealerService getInstance() {
+        if(instance == null)
+            instance = new DealerService();
+
+        return instance;
+    }
+
 
     public ArrayList<Dealer> getDealers() {
         return dealers.all();
@@ -59,6 +70,10 @@ public class DealerService {
             }
         }
         return find;
+    }
+
+    public void requeue(Dealer dealer){
+        dealers.enqueue(dealer);
     }
 
     public Dealer add(String cui, String name, String surname, String license, String phone) {

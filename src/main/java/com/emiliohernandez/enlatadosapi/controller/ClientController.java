@@ -36,7 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class ClientController {
 
     private ObjectMapper om = new ObjectMapper();
-    private ClientService service = new ClientService();
+    private ClientService service = ClientService.getInstance();
     public HttpHeaders responseHeaders = new HttpHeaders();
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)

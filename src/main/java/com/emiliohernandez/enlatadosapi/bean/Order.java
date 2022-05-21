@@ -22,6 +22,16 @@ public class Order {
     private String status;
     private Stock stock;
 
+    private int boxes;
+
+    public int getBoxes() {
+        return boxes;
+    }
+
+    public void setBoxes(int boxes) {
+        this.boxes = boxes;
+    }
+
     public String getNumber() {
         return number;
     }

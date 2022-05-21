@@ -32,7 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/vehicle")
 public class VehicleController {
-    private VehicleService service = new VehicleService();
+    private VehicleService service = VehicleService.getInstance();
     private ObjectMapper om = new ObjectMapper();
     public HttpHeaders responseHeaders = new HttpHeaders();
     
